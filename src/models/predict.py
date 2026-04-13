@@ -11,20 +11,24 @@ from torchvision.models import resnet18, ResNet18_Weights
 import torchvision.transforms as transforms
 
 # === Paths ===
-TEST_IMAGE_DIR = r"D:\projects\thermal_induction_motor\prescriptive maintenance\testing"
-OUTPUT_DIR = r"D:\projects\thermal_induction_motor\prescriptive maintenance\prescriptive_outputs"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+
+TEST_IMAGE_DIR = os.path.join(PROJECT_ROOT, "data", "external", "testing")
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "reports", "prescriptive_outputs")
 CSV_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "prescriptive_predictions.csv")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # === Model Paths ===
-SCALER_PATH = "models/scaler.pkl"
-ENCODER_PATH = "models/fault_label_encoder.pkl"
-ACTION_ENCODER_PATH = "models/action_label_encoder.pkl"
-FAULT_MODEL_PATH = "models/fault_model.pkl"
-SEVERITY_MODEL_PATH = "models/severity_model.pkl"
-ACTION_MODEL_PATH = "models/action_model.pkl"
-COST_MODEL_PATH = "models/cost_model.pkl"
-DOWNTIME_MODEL_PATH = "models/downtime_model.pkl"
+MODEL_DIR = os.path.join(PROJECT_ROOT, "models")
+SCALER_PATH = os.path.join(MODEL_DIR, "scaler.pkl")
+ENCODER_PATH = os.path.join(MODEL_DIR, "fault_label_encoder.pkl")
+ACTION_ENCODER_PATH = os.path.join(MODEL_DIR, "action_label_encoder.pkl")
+FAULT_MODEL_PATH = os.path.join(MODEL_DIR, "fault_model.pkl")
+SEVERITY_MODEL_PATH = os.path.join(MODEL_DIR, "severity_model.pkl")
+ACTION_MODEL_PATH = os.path.join(MODEL_DIR, "action_model.pkl")
+COST_MODEL_PATH = os.path.join(MODEL_DIR, "cost_model.pkl")
+DOWNTIME_MODEL_PATH = os.path.join(MODEL_DIR, "downtime_model.pkl")
 
 
 # === Load Models and Tools ===
@@ -110,7 +114,7 @@ for img_name in os.listdir(TEST_IMAGE_DIR):
     img_path = os.path.join(TEST_IMAGE_DIR, img_name)
     image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if image is None:
-        print(f"⚠️ Could not load image: {img_path}")
+        print(f"[WARNING] Could not load image: {img_path}")
         continue
 
     try:
@@ -152,11 +156,10 @@ for img_name in os.listdir(TEST_IMAGE_DIR):
             "Next_Step": next_step
         })
 
-        print(f"✅ Saved: {save_path}")
+        print(f"[SUCCESS] Saved: {save_path}")
 
     except Exception as e:
-        print(f"❌ Failed on {img_name}: {e}")
+        print(f"[FAILED] Failed on {img_name}: {e}")
 
-# === Save to CSV ===
 pd.DataFrame(results).to_csv(CSV_OUTPUT_PATH, index=False)
-print(f"\n📄 Prescriptive maintenance predictions saved to:\n{CSV_OUTPUT_PATH}")
+print(f"\n[REPORT] Prescriptive maintenance predictions saved to:\n{CSV_OUTPUT_PATH}")

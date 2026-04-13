@@ -19,21 +19,25 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # === Paths ===
-CSV_PATH = "synthetic_maintenance_log.csv"
-IMAGE_BASE_DIR = r"D:\projects\thermal_induction_motor\fault detection and severity prediction\IR-Motor-bmp"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
 
-# Create models directory
-os.makedirs("models", exist_ok=True)
+CSV_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "synthetic_maintenance_log.csv")
+IMAGE_BASE_DIR = os.path.join(PROJECT_ROOT, "data", "raw", "IR-Motor-bmp")
+
+# Ensure models directory exists
+MODEL_DIR = os.path.join(PROJECT_ROOT, "models")
+os.makedirs(MODEL_DIR, exist_ok=True)
 
 # Model and tool paths
-SCALER_PATH = "models/scaler.pkl"
-ENCODER_PATH = "models/fault_label_encoder.pkl"
-ACTION_ENCODER_PATH = "models/action_label_encoder.pkl"
-FAULT_MODEL_PATH = "models/fault_model.pkl"
-SEVERITY_MODEL_PATH = "models/severity_model.pkl"
-ACTION_MODEL_PATH = "models/action_model.pkl"
-COST_MODEL_PATH = "models/cost_model.pkl"
-DOWNTIME_MODEL_PATH = "models/downtime_model.pkl"
+SCALER_PATH = os.path.join(MODEL_DIR, "scaler.pkl")
+ENCODER_PATH = os.path.join(MODEL_DIR, "fault_label_encoder.pkl")
+ACTION_ENCODER_PATH = os.path.join(MODEL_DIR, "action_label_encoder.pkl")
+FAULT_MODEL_PATH = os.path.join(MODEL_DIR, "fault_model.pkl")
+SEVERITY_MODEL_PATH = os.path.join(MODEL_DIR, "severity_model.pkl")
+ACTION_MODEL_PATH = os.path.join(MODEL_DIR, "action_model.pkl")
+COST_MODEL_PATH = os.path.join(MODEL_DIR, "cost_model.pkl")
+DOWNTIME_MODEL_PATH = os.path.join(MODEL_DIR, "downtime_model.pkl")
 
 # === Load CSV ===
 df = pd.read_csv(CSV_PATH)
@@ -218,6 +222,10 @@ def plot_confusion_matrix(cm, class_names, title, file_name):
     plt.close()
     print(f"📁 Saved confusion matrix: {file_name}")
 
+# === Report Figures Path ===
+FIGURES_DIR = os.path.join(PROJECT_ROOT, "reports", "figures")
+os.makedirs(FIGURES_DIR, exist_ok=True)
+
 
 # === Fault classification CM ===
 cm_fault = confusion_matrix(y_fault_test, y_pred_fault)
@@ -225,7 +233,7 @@ plot_confusion_matrix(
     cm_fault,
     fault_encoder.classes_,
     "Fault Classification Confusion Matrix",
-    "confusion_matrix_fault.png"
+    os.path.join(FIGURES_DIR, "confusion_matrix_fault.png")
 )
 
 # === Action recommendation CM ===
@@ -234,5 +242,5 @@ plot_confusion_matrix(
     cm_action,
     action_encoder.classes_,
     "Action Recommendation Confusion Matrix",
-    "confusion_matrix_action.png"
+    os.path.join(FIGURES_DIR, "confusion_matrix_action.png")
 )

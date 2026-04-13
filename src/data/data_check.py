@@ -78,7 +78,9 @@ def plot_sample_images(image_paths, class_counts, samples_per_class=2):
     plt.show()
 
 # Dataset path
-dataset_path = r"D:\projects\thermal_induction_motor\prescriptive maintenance\IR-Motor-bmp"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+dataset_path = os.path.join(PROJECT_ROOT, "data", "raw", "IR-Motor-bmp")
 
 # Step 1: Get all image paths
 image_paths = get_image_paths(dataset_path)

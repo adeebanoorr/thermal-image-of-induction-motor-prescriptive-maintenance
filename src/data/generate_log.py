@@ -5,8 +5,11 @@ import pandas as pd
 import random
 from datetime import datetime, timedelta
 
-DATASET_PATH = r"D:\projects\thermal_induction_motor\fault detection and severity prediction\IR-Motor-bmp"
-OUTPUT_CSV = "synthetic_maintenance_log.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+
+DATASET_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "IR-Motor-bmp")
+OUTPUT_CSV = os.path.join(PROJECT_ROOT, "data", "processed", "synthetic_maintenance_log.csv")
 
 def map_fault_label(folder_name):
     name = folder_name.lower()
